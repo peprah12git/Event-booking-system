@@ -1,5 +1,6 @@
 package Event.Event_booking.controller;
 
+import Event.Event_booking.dto.UserLoginDTO;
 import Event.Event_booking.dto.UserRegistrationDTO;
 import Event.Event_booking.service.UserService;
 import jakarta.validation.Valid;
@@ -25,5 +26,11 @@ public class AuthControllers {
     return ResponseEntity.status(HttpStatus.CREATED).body("Registration Successful");
 }
 
+@PostMapping("/login")
+    public  ResponseEntity<String> login(@Valid @RequestBody UserLoginDTO loginrequest){
+    userService.login(loginrequest);
+    return ResponseEntity.ok("Login Successful");
 
+
+    }
 }
