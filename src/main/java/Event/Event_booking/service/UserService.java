@@ -16,6 +16,9 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public void userRegistration(UserRegistrationDTO registrationDTO){
+        if (userRepository.existsByEmail(registrationDTO.getEmail())) {
+            throw new RuntimeException("Email already in use");
+        }
         User user = new User();
         user.setName(registrationDTO.getName());
         user.setEmail(registrationDTO.getEmail());
