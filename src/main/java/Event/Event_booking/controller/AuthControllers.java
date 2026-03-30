@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 
 
 @RestController
@@ -30,10 +31,10 @@ public class AuthControllers {
 }
 
 @PostMapping("/login")
-    public  ResponseEntity<String> login(@Valid @RequestBody UserLoginDTO loginrequest){
-    userService.login(loginrequest);
-    String token = jwtUtil.generateToken(loginrequest.getEmail());
-    return ResponseEntity.ok("Login Successful");
+    public  ResponseEntity<Map<String, String>> login(@Valid @RequestBody UserLoginDTO loginrequest){
+    String role = userService.login(loginrequest);
+    String token = jwtUtil.generateToken(loginrequest.getEmail(), role);
+    return ResponseEntity.ok(Map.of("token", token));
 
 
     }
