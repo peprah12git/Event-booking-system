@@ -1,11 +1,11 @@
 package Event.Event_booking.mapper;
 
-import Event.Event_booking.dto.UserRegistrationDTo;
+import Event.Event_booking.dto.UserRegistrationDTO;
 import Event.Event_booking.entity.User;
 
 public class UserRegistrationMapper {
     // DTO to entity method
-    public static User toEntity(UserRegistrationDTo registrationDTo) {
+    public static User toEntity(UserRegistrationDTO registrationDTo) {
         User user = new User();
         user.setName(registrationDTo.getName());
         user.setEmail(registrationDTo.getEmail());
@@ -13,8 +13,8 @@ public class UserRegistrationMapper {
         return user;
 
     }
-    public static UserRegistrationDTo todto(User user){
-        UserRegistrationDTo userRegistrationDTo = new UserRegistrationDTo();
+    public static UserRegistrationDTO toDTO(User user){
+        UserRegistrationDTO userRegistrationDTo = new UserRegistrationDTO();
         userRegistrationDTo.setName(user.getName());
         userRegistrationDTo.setEmail(user.getEmail());
         userRegistrationDTo.setPasswordHash(user.getPasswordHash());
