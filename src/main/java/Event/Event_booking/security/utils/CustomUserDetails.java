@@ -20,7 +20,7 @@ public class CustomUserDetails implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPasswordHash())
-                .roles("ATTENDEE") // Assuming all users have the role "ATTENDEE"
+                .roles()
                 .build();
     }
 }

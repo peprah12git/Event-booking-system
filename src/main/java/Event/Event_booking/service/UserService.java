@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 
 @Service
 public class UserService {
@@ -29,7 +31,7 @@ public class UserService {
     }
 
 
-    public void userRegistration(UserRegistrationDTO registrationDTO){
+    public Map<String,String> userRegistration(UserRegistrationDTO registrationDTO){
         if (userRepository.existsByEmail(registrationDTO.getEmail())) {
             throw new RuntimeException("Email already in use");
         }
@@ -42,9 +44,9 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(registrationDTO.getPasswordHash()));
         user.setRole(attendeeRole);
         userRepository.save(user);
+        return Map.of("email", user.getEmail(), "role", attendeeRole.getName());
 
     }
-
 
     public String login(UserLoginDTO loginDTO){
         User user = userRepository.findByEmail(loginDTO.getEmail())
