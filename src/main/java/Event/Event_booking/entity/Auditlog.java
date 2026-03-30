@@ -17,6 +17,7 @@ import java.util.Map;
                 @Index(name = "idx_audit_ts",     columnList = "ts DESC")
         })
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

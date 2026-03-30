@@ -1,13 +1,13 @@
 package Event.Event_booking.service;
 
-import Event.Event_booking.Repository.RoleRepository;
-import Event.Event_booking.Repository.UserRepository;
+
+import Event.Event_booking.repository.RoleRepository;
+import Event.Event_booking.repository.UserRepository;
 import Event.Event_booking.dto.UserLoginDTO;
 import Event.Event_booking.dto.UserRegistrationDTO;
 import Event.Event_booking.entity.Role;
 import Event.Event_booking.entity.User;
-import Event.Event_booking.security.utils.JwtUtil;
-import lombok.AllArgsConstructor;
+import Event.Event_booking.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,7 @@ public class UserService {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+
     }
 
 
@@ -57,4 +58,5 @@ public class UserService {
 return user.getRole().getName();
 
     }
-}
+
+    }

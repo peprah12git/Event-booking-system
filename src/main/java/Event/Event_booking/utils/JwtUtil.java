@@ -1,4 +1,4 @@
-package Event.Event_booking.security.utils;
+package Event.Event_booking.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
