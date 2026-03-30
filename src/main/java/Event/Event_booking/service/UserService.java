@@ -25,6 +25,9 @@ public class UserService {
         user.setEmail(registrationDTO.getEmail());
         user.setPasswordHash(passwordEncoder.encode(registrationDTO.getPasswordHash()));
         userRepository.save(user);
+
+
+
     }
 
     public void login(UserLoginDTO loginDTO){
@@ -33,6 +36,7 @@ public class UserService {
         if (!passwordEncoder.matches(loginDTO.getPasswordHash(), user.getPasswordHash())) {
             throw new RuntimeException("Invalid email or password");
         }
+
 
     }
 }
