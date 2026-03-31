@@ -55,5 +55,4 @@ public class AuthControllers {
 
         return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
     }
-
 }
