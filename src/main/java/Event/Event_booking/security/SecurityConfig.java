@@ -1,7 +1,6 @@
 package Event.Event_booking.security;
 
-import Event.Event_booking.security.utils.CustomUserDetails;
-import Event.Event_booking.security.utils.JwtAuthenticationFilter;
+import Event.Event_booking.utils.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,9 +32,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
             return httpSecurity.build();
     }
-
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -2,6 +2,7 @@ package Event.Event_booking.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
 
@@ -24,7 +25,7 @@ public class User {
     @Column(name = "email", nullable = false, length = 254, unique = true)
     private String email;
 
-    @Column(name = "password_hash", nullable = false, length = 60)
+    @Column(name = "password_hash", nullable = false, length = 72)
     private String passwordHash;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -36,7 +37,7 @@ public class User {
     private boolean isOrganizerApproved = false;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    @Builder.Default
+    @CreationTimestamp
     private OffsetDateTime createdAt = OffsetDateTime.now();
 }
 

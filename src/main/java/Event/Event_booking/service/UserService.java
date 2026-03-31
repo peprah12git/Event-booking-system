@@ -1,16 +1,17 @@
 package Event.Event_booking.service;
 
-import Event.Event_booking.Repository.RoleRepository;
-import Event.Event_booking.Repository.UserRepository;
+
+import Event.Event_booking.entity.*;
+import Event.Event_booking.repository.*;
 import Event.Event_booking.dto.UserLoginDTO;
 import Event.Event_booking.dto.UserRegistrationDTO;
-import Event.Event_booking.entity.Role;
-import Event.Event_booking.entity.User;
-import Event.Event_booking.security.utils.JwtUtil;
-import lombok.AllArgsConstructor;
+import Event.Event_booking.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.util.Map;
 
 
 @Service
@@ -18,18 +19,26 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final TokenBlackListService tokenBlacklistService;
+    private final AuditLogRepository auditLogRepository;
+    private final AuditActionRepository auditActionRepository;
+    private final AuditEntityRepository auditEntityRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserService(JwtUtil jwtUtil, UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(JwtUtil jwtUtil, UserRepository userRepository, RoleRepository roleRepository, TokenBlackListService tokenBlacklistService, AuditLogRepository auditLogRepository, AuditActionRepository auditActionRepository, AuditEntityRepository auditEntityRepository) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.tokenBlacklistService = tokenBlacklistService;
+        this.auditLogRepository = auditLogRepository;
+        this.auditActionRepository = auditActionRepository;
+        this.auditEntityRepository = auditEntityRepository;
     }
 
 
-    public void userRegistration(UserRegistrationDTO registrationDTO){
+    public Map<String, String> userRegistration(UserRegistrationDTO registrationDTO) {
         if (userRepository.existsByEmail(registrationDTO.getEmail())) {
             throw new RuntimeException("Email already in use");
         }
@@ -42,17 +51,17 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(registrationDTO.getPasswordHash()));
         user.setRole(attendeeRole);
         userRepository.save(user);
+        return Map.of("email", user.getEmail(), "role", attendeeRole.getName());
 
     }
 
-
-    public String login(UserLoginDTO loginDTO){
+    public String login(UserLoginDTO loginDTO) {
         User user = userRepository.findByEmail(loginDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
         if (!passwordEncoder.matches(loginDTO.getPasswordHash(), user.getPasswordHash())) {
             throw new RuntimeException("Invalid email or password");
         }
-return user.getRole().getName();
+        return user.getRole().getName();
 
     }
 }
