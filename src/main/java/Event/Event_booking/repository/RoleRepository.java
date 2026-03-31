@@ -1,4 +1,4 @@
-package Event.Event_booking.Repository;
+package Event.Event_booking.repository;
 
 import Event.Event_booking.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

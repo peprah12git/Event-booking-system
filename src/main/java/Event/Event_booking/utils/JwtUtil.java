@@ -1,4 +1,4 @@
-package Event.Event_booking.security.utils;
+package Event.Event_booking.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -18,6 +18,9 @@ public class JwtUtil {
 
     @Value("${jwt.expiration}")
     private long jwtExpirationInMs;
+
+    @Value("${jwt.refresh-expiration}")
+    private long refreshExpirationMs;
 
     public SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(secretkey.getBytes());
@@ -54,5 +57,18 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public String generateRefreshToken(String email, String role) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("role", role)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs * 2)) // Longer expiration for refresh token
+                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+    public String extractRole(String token) {
+        return (String) getClaims(token).get("role");
     }
 }
