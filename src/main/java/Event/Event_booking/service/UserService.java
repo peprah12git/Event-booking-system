@@ -19,7 +19,6 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final TokenBlackListService tokenBlacklistService;
     private final AuditLogRepository auditLogRepository;
     private final AuditActionRepository auditActionRepository;
     private final AuditEntityRepository auditEntityRepository;
@@ -27,11 +26,10 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserService(JwtUtil jwtUtil, UserRepository userRepository, RoleRepository roleRepository, TokenBlackListService tokenBlacklistService, AuditLogRepository auditLogRepository, AuditActionRepository auditActionRepository, AuditEntityRepository auditEntityRepository) {
+    public UserService(JwtUtil jwtUtil, UserRepository userRepository, RoleRepository roleRepository,  AuditLogRepository auditLogRepository, AuditActionRepository auditActionRepository, AuditEntityRepository auditEntityRepository) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.tokenBlacklistService = tokenBlacklistService;
         this.auditLogRepository = auditLogRepository;
         this.auditActionRepository = auditActionRepository;
         this.auditEntityRepository = auditEntityRepository;
