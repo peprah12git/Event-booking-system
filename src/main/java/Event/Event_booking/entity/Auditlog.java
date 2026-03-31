@@ -48,7 +48,7 @@ public class Auditlog {
 
     /**
      * JSONB column — Hibernate maps it as a {@code Map<String, Object>}.
-     * The GIN indexes on old_values / new_values are defined in DDL.
+     * The GIN indexes on old_values or new_values are defined in DDL.
      */
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "old_values", columnDefinition = "jsonb")
