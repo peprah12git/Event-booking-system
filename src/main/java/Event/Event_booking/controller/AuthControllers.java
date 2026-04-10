@@ -2,7 +2,8 @@ package Event.Event_booking.controller;
 
 import Event.Event_booking.dto.UserLoginDTO;
 import Event.Event_booking.dto.UserRegistrationDTO;
-import Event.Event_booking.utils.JwtUtil;
+import Event.Event_booking.entity.User;
+import Event.Event_booking.security.JwtTokenService;
 import Event.Event_booking.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,42 +18,59 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthControllers {
-    private  final UserService userService;
-    private  final JwtUtil jwtUtil;
+    private final UserService userService;
+    private final JwtTokenService jwtTokenService;
+
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerUser(@Valid @RequestBody UserRegistrationDTO request) {
-        Map<String, String> userInfo = userService.userRegistration(request);
+        User user = userService.userRegistration(request);
+        
+        Map<String, String> tokens = jwtTokenService.generateTokens(user);
 
-        String accessToken = jwtUtil.generateToken(userInfo.get("email"), userInfo.get("role"));
-        String refreshToken = jwtUtil.generateRefreshToken(userInfo.get("email"), userInfo.get("role"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(tokens);
+    }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken
+
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody UserLoginDTO loginrequest) {
+        User user = userService.login(loginrequest);
+        
+        Map<String, String> tokens = jwtTokenService.generateTokens(user);
+        
+        return ResponseEntity.ok(Map.of(
+            "token", tokens.get("accessToken"),
+            "refreshToken", tokens.get("refreshToken")
         ));
     }
 
-@PostMapping("/login")
-    public  ResponseEntity<Map<String, String>> login(@Valid @RequestBody UserLoginDTO loginrequest){
-    String role = userService.login(loginrequest);
-    String token = jwtUtil.generateToken(loginrequest.getEmail(), role);
-    String refreshToken = jwtUtil.generateRefreshToken(loginrequest.getEmail(), role);
-    return ResponseEntity.ok(Map.of("token", token,  "refreshToken", refreshToken));
-
-
-    }
+    /**
+     * Refresh the access token using a valid refresh token
+     * @param request a map containing the refreshToken
+     * @return a map containing the new accessToken
+     */
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, String>> refresh(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
 
-        if (!jwtUtil.isTokenValid(refreshToken)) {
+        if (!jwtTokenService.isRefreshTokenValid(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid or expired refresh token"));
         }
 
-        String email = jwtUtil.extractEmail(refreshToken);
-        String newAccessToken = jwtUtil.generateToken(email, jwtUtil.extractRole(refreshToken));
+        String newAccessToken = jwtTokenService.generateAccessTokenFromRefreshToken(refreshToken);
 
         return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+
+        if (!jwtTokenService.logoutRefreshToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid or expired refresh token"));
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 }

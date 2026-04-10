@@ -22,6 +22,10 @@ public class JwtUtil {
     @Value("${jwt.refresh-expiration}")
     private long refreshExpirationMs;
 
+    public long getRefreshExpirationMs() {
+        return refreshExpirationMs;
+    }
+
     public SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(secretkey.getBytes());
     }
@@ -64,7 +68,7 @@ public class JwtUtil {
                 .setSubject(email)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs * 2)) // Longer expiration for refresh token
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationMs)) // 7 days expiration for refresh token
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
